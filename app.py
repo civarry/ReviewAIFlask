@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from config import Config
 from document_processor import DocumentProcessor
 from rag_service import RAGService
+import os
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -115,4 +116,5 @@ def utility_processor():
     return dict(current_step=session.get('current_step', 0))
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    port = int(os.environ.get('PORT', 5000))  # Get the port from the environment
+    app.run(host='0.0.0.0', port=port, debug=False)
