@@ -1,0 +1,29 @@
+<!-- templates/upload.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h1 class="text-center gradient-text display-4 mb-4">ReviewAI</h1>
+        <p class="text-center text-muted mb-5">Upload your document and test your knowledge with AI-generated questions</p>
+        
+        <div class="card">
+            <div class="card-body p-4">
+                <h5 class="card-title mb-4">
+                    <i class="fas fa-upload me-2"></i>Document Upload
+                </h5>
+                
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="upload-zone mb-4">
+                        <i class="fas fa-file-alt fs-2 mb-3 text-primary"></i>
+                        <p class="mb-3">Supported formats: .txt, .csv, .docx</p>
+                        <input class="form-control" type="file" id="file" name="file" accept=".txt,.csv,.docx" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-arrow-right me-2"></i>Continue
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

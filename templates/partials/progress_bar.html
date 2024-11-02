@@ -1,0 +1,18 @@
+<div class="progress-steps mb-5">
+    <div class="step {% if current_step >= 0 %}active{% endif %} {% if current_step > 0 %}completed{% endif %}">
+        <div class="step-circle">1</div>
+        <div class="step-label">Upload</div>
+    </div>
+    <div class="step {% if current_step >= 1 %}active{% endif %} {% if current_step > 1 %}completed{% endif %}">
+        <div class="step-circle">2</div>
+        <div class="step-label">Generate</div>
+    </div>
+    <div class="step {% if current_step >= 2 %}active{% endif %} {% if current_step > 2 %}completed{% endif %}">
+        <div class="step-circle">3</div>
+        <div class="step-label">Answer</div>
+    </div>
+    <div class="step {% if current_step >= 3 %}active{% endif %} {% if current_step > 3 %}completed{% endif %}">
+        <div class="step-circle">✓</div>
+        <div class="step-label">Result</div>
+    </div>
+</div>

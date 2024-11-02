@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <h2 class="text-center gradient-text mb-4">Results</h2>
+        
+        {% for question, answer, validation in zip(questions, answers, validations) %}
+        {% set validation_text = validation.validation|lower %}
+        {% set verdict = "Correct" if "verdict: correct" in validation_text else "Incorrect" %}
+        <div class="card mb-4 {% if verdict == 'Correct' %}bg-success-subtle{% else %}bg-danger-subtle{% endif %}">
+            <div class="card-header border-0 py-3">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-{% if verdict == 'Correct' %}check{% else %}times{% endif %}-circle me-3 
+                       text-{% if verdict == 'Correct' %}success{% else %}danger{% endif %} fs-4"></i>
+                    <div>
+                        <h5 class="mb-1">Question {{ validation.number }}</h5>
+                        <p class="mb-0">{{ question }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="mb-4">
+                    <h6 class="text-muted mb-2">Your Answer:</h6>
+                    <p class="mb-0">{{ answer }}</p>
+                </div>
+                <div>
+                    <h6 class="text-muted mb-2">Feedback:</h6>
+                    <p class="mb-0 validation-text">{{ validation.validation }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        
+        <div class="text-center mt-4 mb-5">
+            <a href="{{ url_for('generate_questions') }}" class="btn btn-primary me-3">
+                <i class="fas fa-redo me-2"></i>Generate More Questions
+            </a>
+            <a href="{{ url_for('upload_file') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-upload me-2"></i>Upload New Document
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

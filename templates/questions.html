@@ -1,0 +1,34 @@
+<!-- templates/questions.html -->
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <h2 class="text-center gradient-text mb-4">Answer the Questions</h2>
+        
+        <form method="POST" action="{{ url_for('submit_answers') }}">
+            {% for question in questions %}
+            <div class="card mb-4">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-3">
+                        <i class="fas fa-question-circle me-2 text-primary"></i>
+                        Question {{ loop.index }}
+                    </h5>
+                    <p class="card-text mb-4">{{ question }}</p>
+                    <input type="hidden" name="questions" value="{{ question }}">
+                    <textarea 
+                        name="answers" 
+                        class="form-control" 
+                        rows="3" 
+                        placeholder="Type your answer here..." 
+                        required
+                    ></textarea>
+                </div>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-check-circle me-2"></i>Submit Answers
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
