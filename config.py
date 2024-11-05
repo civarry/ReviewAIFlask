@@ -6,7 +6,7 @@ load_dotenv()
 
 class Config:
     # Flask Config
-    SECRET_KEY = os.getenv('SECRET_KEY', 'your_fallback_secret_key')
+    SECRET_KEY = os.getenv('SECRET_KEY')
     
     # Directory Configuration
     BASE_STORAGE_DIR = "user_data"

@@ -7,14 +7,9 @@
     {% include 'partials/styles.html' %}
 </head>
 <body>
-    {% if user %}
-    <div class="user-info">
-        Welcome, {{ user }}! 
-        <a href="{{ url_for('logout') }}">Logout</a>
-    </div>
-    {% else %}
-        <a href="{{ url_for('login') }}">Login with Google</a>
-    {% endif %}
+    <!-- Modal -->
+    {% include 'partials/navigation_bar.html' %}
+    
     <!-- Modal -->
     {% include 'partials/modal.html' %}
 

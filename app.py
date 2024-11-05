@@ -247,11 +247,10 @@ def submit_answers():
 
 @app.context_processor
 def utility_processor():
-    """Add current_step and user to all templates by default"""
+    """Add current_step to all templates by default"""
     return dict(
         current_step=session.get('current_step', 0),
-        user=getattr(current_user, 'name', None)
     )
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=False)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
