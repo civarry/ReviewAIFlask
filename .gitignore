@@ -3,3 +3,4 @@ env
 __pycache__
 chroma_embeddings
 documents
+user_data

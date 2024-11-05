@@ -9,6 +9,7 @@ class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'your_fallback_secret_key')
     
     # Directory Configuration
+    BASE_STORAGE_DIR = "user_data"
     SAVE_DIR = 'documents'
     EMBEDDINGS_DIR = 'chroma_embeddings'
     
@@ -25,3 +26,8 @@ class Config:
     
     # Allowed File Extensions
     ALLOWED_EXTENSIONS = ('.txt', '.csv', '.docx')
+
+    # Google OAuth 2.0 settings
+    GOOGLE_CLIENT_ID = os.getenv('google_client_id')
+    GOOGLE_CLIENT_SECRET = os.getenv('google_client_secret')
+    GOOGLE_DISCOVERY_URL = "https://accounts.google.com/.well-known/openid-configuration"
