@@ -2,8 +2,11 @@ import os
 import uuid
 import pandas as pd
 from docx import Document
+from PyPDF2 import PdfReader
 from langchain_community.document_loaders import DirectoryLoader, TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.schema import Document as LangchainDocument
+import logging
 
 class DocumentProcessor:
     def __init__(self, save_dir, chunk_size, chunk_overlap):
@@ -11,59 +14,146 @@ class DocumentProcessor:
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         os.makedirs(self.save_dir, exist_ok=True)
+        logging.basicConfig(level=logging.DEBUG)
+        self.logger = logging.getLogger(__name__)
+
+    def extract_text_from_pdf(self, file):
+        """Extract text from PDF files."""
+        try:
+            # Save the file content to a temporary file
+            temp_path = os.path.join(self.save_dir, 'temp.pdf')
+            file.save(temp_path)
+            
+            reader = PdfReader(temp_path)
+            text = ""
+            for page in reader.pages:
+                text += page.extract_text() + "\n"
+            
+            # Clean up the temporary file
+            os.remove(temp_path)
+            return text
+        except Exception as e:
+            self.logger.error(f"Error extracting PDF text: {str(e)}")
+            return None
+
+    def extract_text_from_docx(self, file):
+        """Extract text from DOCX files."""
+        try:
+            # Save the file content to a temporary file
+            temp_path = os.path.join(self.save_dir, 'temp.docx')
+            file.save(temp_path)
+            
+            doc = Document(temp_path)
+            text = ' '.join([para.text for para in doc.paragraphs])
+            
+            # Clean up the temporary file
+            os.remove(temp_path)
+            return text
+        except Exception as e:
+            self.logger.error(f"Error extracting DOCX text: {str(e)}")
+            return None
 
     def extract_text_from_file(self, uploaded_file):
         """Extract text from various file types."""
-        filename = uploaded_file.filename
-        if filename.endswith('.txt'):
-            return uploaded_file.read().decode('utf-8')
-        elif filename.endswith('.csv'):
-            df = pd.read_csv(uploaded_file)
-            return ' '.join(df.astype(str).agg(' '.join, axis=1).tolist())
-        elif filename.endswith('.docx'):
-            doc = Document(uploaded_file)
-            return ' '.join([para.text for para in doc.paragraphs])
-        return None
+        try:
+            filename = uploaded_file.filename.lower()
+            self.logger.debug(f"Processing file: {filename}")
+            
+            if filename.endswith('.txt'):
+                return uploaded_file.read().decode('utf-8')
+            elif filename.endswith('.csv'):
+                df = pd.read_csv(uploaded_file)
+                return ' '.join(df.astype(str).agg(' '.join, axis=1).tolist())
+            elif filename.endswith('.docx'):
+                return self.extract_text_from_docx(uploaded_file)
+            elif filename.endswith('.pdf'):
+                return self.extract_text_from_pdf(uploaded_file)
+            
+            self.logger.error(f"Unsupported file type: {filename}")
+            return None
+        except Exception as e:
+            self.logger.error(f"Error in extract_text_from_file: {str(e)}")
+            return None
 
     def save_text_to_file(self, text, filename):
         """Save extracted text to a file."""
-        unique_filename = f"{uuid.uuid4()}_{filename}"
-        file_path = os.path.join(self.save_dir, unique_filename)
-        with open(file_path, 'w', encoding='utf-8') as f:
-            f.write(text)
-        return file_path
+        try:
+            # Ensure filename ends with .txt
+            base_name = os.path.splitext(filename)[0]
+            unique_filename = f"{uuid.uuid4()}_{base_name}.txt"
+            file_path = os.path.join(self.save_dir, unique_filename)
+            
+            self.logger.debug(f"Saving text to file: {file_path}")
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(text)
+            return file_path
+        except Exception as e:
+            self.logger.error(f"Error saving text to file: {str(e)}")
+            return None
 
-    def load_documents(self):
-        """Load documents from the save directory."""
-        loader = DirectoryLoader(
-            self.save_dir, 
-            glob="**/*.txt", 
-            loader_cls=TextLoader, 
-            show_progress=True
-        )
-        return loader.load()
+    def load_documents(self, text, filename):
+        """Create a LangChain document directly from text."""
+        try:
+            doc = LangchainDocument(
+                page_content=text,
+                metadata={"source": filename}
+            )
+            self.logger.debug(f"Created document with metadata: {doc.metadata}")
+            return [doc]
+        except Exception as e:
+            self.logger.error(f"Error creating document: {str(e)}")
+            return None
 
     def split_documents(self, documents):
         """Split documents into chunks."""
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=self.chunk_size,
-            chunk_overlap=self.chunk_overlap
-        )
-        return text_splitter.split_documents(documents)
+        try:
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=self.chunk_size,
+                chunk_overlap=self.chunk_overlap
+            )
+            return text_splitter.split_documents(documents)
+        except Exception as e:
+            self.logger.error(f"Error splitting documents: {str(e)}")
+            return None
 
     def cleanup_documents(self):
         """Remove files in the SAVE_DIR after processing."""
-        for filename in os.listdir(self.save_dir):
-            file_path = os.path.join(self.save_dir, filename)
-            os.remove(file_path)
+        try:
+            for filename in os.listdir(self.save_dir):
+                if filename != 'temp.pdf' and filename != 'temp.docx':
+                    file_path = os.path.join(self.save_dir, filename)
+                    os.remove(file_path)
+        except Exception as e:
+            self.logger.error(f"Error cleaning up documents: {str(e)}")
 
     def process_file(self, uploaded_file):
         """Process a file from upload to splitting."""
-        text = self.extract_text_from_file(uploaded_file)
-        if text:
-            self.save_text_to_file(text, uploaded_file.filename)
-            documents = self.load_documents()
+        try:
+            self.logger.info(f"Starting to process file: {uploaded_file.filename}")
+            
+            # Reset file pointer to beginning
+            uploaded_file.seek(0)
+            
+            # Extract text from file
+            text = self.extract_text_from_file(uploaded_file)
+            if not text:
+                self.logger.error("Failed to extract text from file")
+                return None
+
+            # Create document directly from text
+            documents = self.load_documents(text, uploaded_file.filename)
+            if not documents:
+                self.logger.error("Failed to create document")
+                return None
+
+            # Split the documents
             split_docs = self.split_documents(documents)
-            self.cleanup_documents()
+            if not split_docs:
+                self.logger.error("Failed to split documents")
+                return None
+
             return split_docs
-        return None
+            
+        except Exception as e:
+            self.logger.error(f"Error in process_file: {str(e)}")
+            return None

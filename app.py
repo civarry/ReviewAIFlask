@@ -158,18 +158,24 @@ def upload_file():
             return redirect(request.url)
         
         if uploaded_file and uploaded_file.filename.lower().endswith(app.config['ALLOWED_EXTENSIONS']):
-            doc_processor, rag_service = get_user_services(current_user.id)
-            split_docs = doc_processor.process_file(uploaded_file)
-            
-            if split_docs:
-                # Store only the collection name in session
-                collection_name = rag_service.create_rag_chain(split_docs)
-                session[f'collection_name_{current_user.id}'] = collection_name
-                session['current_step'] = 1
-                return redirect(url_for('generate_questions'))
-            
-            flash('Error processing document')
-            return redirect(request.url)
+            try:
+                doc_processor, rag_service = get_user_services(current_user.id)
+                split_docs = doc_processor.process_file(uploaded_file)
+                
+                if split_docs:
+                    collection_name = rag_service.create_rag_chain(split_docs)
+                    session[f'collection_name_{current_user.id}'] = collection_name
+                    session['current_step'] = 1
+                    return redirect(url_for('generate_questions'))
+                else:
+                    app.logger.error("Document processing returned None")
+                    flash('Error processing document: No content could be extracted')
+                    return redirect(request.url)
+                
+            except Exception as e:
+                app.logger.error(f"Error processing document: {str(e)}")
+                flash(f'Error processing document: {str(e)}')
+                return redirect(request.url)
         
         flash('Unsupported file type')
         return redirect(request.url)

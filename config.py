@@ -25,7 +25,7 @@ class Config:
     EMBEDDING_MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
     
     # Allowed File Extensions
-    ALLOWED_EXTENSIONS = ('.txt', '.csv', '.docx')
+    ALLOWED_EXTENSIONS = ('.txt', '.pdf', '.docx', '.csv')
 
     # Google OAuth 2.0 settings
     GOOGLE_CLIENT_ID = os.getenv('google_client_id')
