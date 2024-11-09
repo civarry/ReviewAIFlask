@@ -24,6 +24,10 @@
     <!-- Main Content Block -->
     {% block content %}{% endblock %}
 
+    {% if show_footer %}
+        {% include 'partials/footer.html' %}
+    {% endif %}
+
     {% include 'partials/scripts.html' %}
 </body>
 </html>

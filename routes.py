@@ -72,7 +72,7 @@ def logout():
 
 @app.route("/", methods=['GET'])
 def index():
-    return render_template('index.html', show_progress_bar=False, current_year=datetime.now().year)
+    return render_template('index.html',show_footer=True, show_progress_bar=False, current_year=datetime.now().year)
 
 @app.route('/upload_file', methods=['GET', 'POST'])
 @login_required

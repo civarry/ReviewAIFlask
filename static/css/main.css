@@ -1,8 +1,16 @@
+/* Base Styles */
 body {
     background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
     min-height: 100vh;
+    padding-top: 70px;
+    padding-bottom: 70px;
 }
 
+body:not(:has(footer)) {
+    padding-bottom: 0;
+}
+
+/* Typography */
 .gradient-text {
     background: linear-gradient(45deg, #2563eb, #4f46e5);
     -webkit-background-clip: text;
@@ -10,6 +18,69 @@ body {
     color: transparent;
 }
 
+/* Layout Components */
+footer.fixed-bottom {
+    z-index: 1020;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+}
+
+/* Form Elements */
+.form-control, 
+.form-select {
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 0.75rem 1rem;
+}
+
+.btn {
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #2563eb, #4f46e5);
+    border: none;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #1d4ed8, #4338ca);
+    transform: translateY(-1px);
+}
+
+/* Upload Zone */
+.upload-zone {
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    transition: all 0.3s;
+}
+
+.upload-zone:hover {
+    border-color: #2563eb;
+    background: rgba(37, 99, 235, 0.05);
+}
+
+/* Progress Steps */
 .progress-steps {
     position: relative;
     display: flex;
@@ -57,54 +128,7 @@ body {
     color: white;
 }
 
-.card {
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    transition: all 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}
-
-.upload-zone {
-    border: 2px dashed #dee2e6;
-    border-radius: 8px;
-    padding: 2rem;
-    text-align: center;
-    transition: all 0.3s;
-}
-
-.upload-zone:hover {
-    border-color: #2563eb;
-    background: rgba(37, 99, 235, 0.05);
-}
-
-.form-control, .form-select {
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    padding: 0.75rem 1rem;
-}
-
-.btn {
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    font-weight: 500;
-    transition: all 0.3s;
-}
-
-.btn-primary {
-    background: linear-gradient(45deg, #2563eb, #4f46e5);
-    border: none;
-}
-
-.btn-primary:hover {
-    background: linear-gradient(45deg, #1d4ed8, #4338ca);
-    transform: translateY(-1px);
-}
-
+/* Utility Classes */
 .bg-success-subtle {
     background-color: rgba(16, 185, 129, 0.1) !important;
 }
@@ -117,12 +141,20 @@ body {
     white-space: pre-line;
 }
 
-/* Navigation Bar  */
-body {
-    padding-top: 70px;
+.hover-shadow-lg {
+    transition: all 0.3s ease;
 }
 
-@media (max-width: 991.98px) { /* Bootstrap's lg breakpoint */
+.hover-shadow-lg:hover {
+    transform: translateY(-5px);
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+/* Media Queries */
+@media (max-width: 991.98px) {
     .navbar-collapse {
         padding: 1rem 0;
     }
@@ -136,5 +168,10 @@ body {
         display: block;
         width: 100%;
         margin-top: 0.5rem;
+    }
+
+    .vh-100 {
+        height: auto !important;
+        padding: 3rem 0;
     }
 }
