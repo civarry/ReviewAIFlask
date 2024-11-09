@@ -2,6 +2,7 @@ from langchain.chains import RetrievalQA
 from langchain_chroma import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
+from prompts import get_question_generation_prompt, get_answer_validation_prompt
 
 class RAGService:
     def __init__(self, groq_api_key, model_name, embedding_model_name, embeddings_dir):
@@ -55,32 +56,9 @@ class RAGService:
     
     def generate_questions(self, collection_name, question_count, complexity):
         """Generate questions using the RAG chain."""
-        
-        # Define specific instructions based on complexity level
-        complexity_instructions = {
-            "Easy": "Generate questions that are straightforward and easily understandable, focusing on key concepts.",
-            "Medium": "Create questions that are understandable but include a subtle twist or require connecting concepts.",
-            "Hard": "Formulate questions that challenge the user to think critically or make inferences based on the document."
-        }
-        
-        # Retrieve the instructions for the specified complexity
-        complexity_text = complexity_instructions.get(complexity, "Specify a valid complexity level.")
-
-        user_query = f"""Generate {question_count} unique questions based strictly on the provided document.
-
-        Required: Analyze the provided document to identify key concepts, terminology, and logical flow.
-
-        {complexity_text}
-
-        Instructions:
-        1. **Unique Questions**: Each question should cover different content or phrasing.
-        2. **Open-ended**: Formulate questions that require critical thinking or inference.
-        3. **Document-Based**: Rely solely on the document's content—no external assumptions.
-
-        Output only the questions, with no commentary or additional information."""
-        
         rag_chain = self.get_rag_chain(collection_name)
-        response = rag_chain.invoke({"query": user_query})
+        prompt = get_question_generation_prompt(question_count, complexity)
+        response = rag_chain.invoke({"query": prompt})
         
         # Process and return the questions
         questions = [q.strip() for q in response['result'].split('\n') if q.strip() and not q.startswith("Here are")]
@@ -89,23 +67,6 @@ class RAGService:
     def validate_answer(self, collection_name, question, answer):
         """Validate an answer using the RAG chain."""
         rag_chain = self.get_rag_chain(collection_name)
-        
-        validation_query = f"""
-        Validation Task
-        --------------
-        Question: {question}
-        Answer: {answer}
-        
-        Instructions for Validation:
-        1. Compare answer against retrieved context from uploaded document
-        2. Focus on factual accuracy and completeness
-        3. Check if answer directly addresses the question
-        4. Ignore any information not from the document context
-        
-        Required Output Format:
-        Verdict: [One word: Correct or Incorrect]
-        Feedback: [One clear sentence explaining the verdict, max 30 words]
-        """
-        
-        validation_response = rag_chain.invoke({"query": validation_query})
+        prompt = get_answer_validation_prompt(question, answer)
+        validation_response = rag_chain.invoke({"query": prompt})
         return validation_response['result'].strip()
