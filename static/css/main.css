@@ -1,9 +1,14 @@
-/* Base Styles */
+html {
+    overflow-y: auto;
+}
+
 body {
-    background: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+    overflow-y: auto;
     min-height: 100vh;
+    box-sizing: border-box;
     padding-top: 70px;
     padding-bottom: 70px;
+    margin: 0;
 }
 
 body:not(:has(footer)) {
