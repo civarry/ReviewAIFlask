@@ -1,7 +1,7 @@
 # ReviewAIFlask
-![image](https://github.com/user-attachments/assets/2f445706-edb2-45d8-9268-1a7e499c3870)
-![image](https://github.com/user-attachments/assets/5e37f83c-2d0e-4a8d-9c93-a4c1919c3d3c)
-![2_generate](https://github.com/user-attachments/assets/1e03733b-e507-499c-bf56-9a06aed40bdc)
-![3_answer](https://github.com/user-attachments/assets/f697eeb4-02d7-4994-9f76-8b41cb45884d)
-![4_filled](https://github.com/user-attachments/assets/a2361356-c30c-45e5-94dc-ae020a656aab)
-![5_result](https://github.com/user-attachments/assets/8a7e1d3d-1b63-4ab1-8aaa-a515eff3e2ee)
+![1](https://github.com/user-attachments/assets/042da368-064f-48cc-8d64-cacf829fa4f3)
+![2](https://github.com/user-attachments/assets/e8a658f5-7b44-4b3d-9185-d0627de511a8)
+![3](https://github.com/user-attachments/assets/bd2e3534-7cc8-4b19-9e43-f48976229a79)
+![4](https://github.com/user-attachments/assets/78d2a4d9-efd7-415e-80b8-a553180e78b2)
+![5](https://github.com/user-attachments/assets/c2938133-5b9e-4f7e-bacd-fed07eb2389a)
+![6](https://github.com/user-attachments/assets/4af32245-8d99-4e7a-99ba-3d55ccbf809f)
