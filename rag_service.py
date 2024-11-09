@@ -55,18 +55,34 @@ class RAGService:
     
     def generate_questions(self, collection_name, question_count, complexity):
         """Generate questions using the RAG chain."""
+        
+        # Define specific instructions based on complexity level
+        complexity_instructions = {
+            "Easy": "Generate questions that are straightforward and easily understandable, focusing on key concepts.",
+            "Medium": "Create questions that are understandable but include a subtle twist or require connecting concepts.",
+            "Hard": "Formulate questions that challenge the user to think critically or make inferences based on the document."
+        }
+        
+        # Retrieve the instructions for the specified complexity
+        complexity_text = complexity_instructions.get(complexity, "Specify a valid complexity level.")
+
+        user_query = f"""Generate {question_count} unique questions based strictly on the provided document.
+
+        Required: Analyze the provided document to identify key concepts, terminology, and logical flow.
+
+        {complexity_text}
+
+        Instructions:
+        1. **Unique Questions**: Each question should cover different content or phrasing.
+        2. **Open-ended**: Formulate questions that require critical thinking or inference.
+        3. **Document-Based**: Rely solely on the document's content—no external assumptions.
+
+        Output only the questions, with no commentary or additional information."""
+        
         rag_chain = self.get_rag_chain(collection_name)
-        
-        user_query = f"""You are an advanced question generation model tasked with creating {question_count} unique questions based exclusively on the provided documents. Each question should reflect the specified complexity level of {complexity}.
-        
-        Your output must consist of questions only, with no additional information or commentary.
-        
-        ***Complexity Level:*** Ensure each question aligns with the specified complexity level ({complexity}).
-        ***Uniqueness:*** Each question must be distinct, ensuring no overlap in content or phrasing among the questions.
-        ***Question Format:*** Generate only questions, focusing on open-ended formats that encourage deeper thinking and exploration of the text.
-        ***Strict Adherence:*** All questions must strictly derive from the content of the documents provided, with no external information or assumptions included."""
-        
         response = rag_chain.invoke({"query": user_query})
+        
+        # Process and return the questions
         questions = [q.strip() for q in response['result'].split('\n') if q.strip() and not q.startswith("Here are")]
         return questions
     

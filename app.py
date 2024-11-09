@@ -140,9 +140,16 @@ def callback():
 def logout():
     logout_user()
     session.clear()
-    return redirect(url_for("upload_file"))
+    return render_template('index.html', show_progress_bar=False, current_year=datetime.now().year)
 
-@app.route('/', methods=['GET', 'POST'])
+# Index route
+@app.route("/", methods=['GET'])
+def index():
+    # Render index.html for the first-time visitors
+    return render_template('index.html', show_progress_bar=False, current_year=datetime.now().year)
+
+# Authenticated route for file upload
+@app.route('/upload_file', methods=['GET', 'POST'])
 @login_required
 def upload_file():
     session['current_step'] = 0
@@ -182,7 +189,8 @@ def upload_file():
     
     return render_template('upload.html', 
                          current_step=session.get('current_step', 0),
-                         user=current_user)
+                         user=current_user,
+                         show_progress_bar=True) 
 
 @app.route('/generate_questions', methods=['GET', 'POST'])
 @login_required
@@ -196,7 +204,7 @@ def generate_questions():
     
     if request.method == 'POST':
         question_count = int(request.form.get('question_count', 5))
-        complexity = request.form.get('complexity', 'Medium')
+        complexity = request.form.get('complexity', 'Easy')
         
         _, rag_service = get_user_services(current_user.id)
         questions = rag_service.generate_questions(
@@ -213,7 +221,8 @@ def generate_questions():
     
     return render_template('generate_questions.html',
                          current_step=session['current_step'],
-                         user=current_user)
+                         user=current_user,
+                         show_progress_bar=True)
 
 @app.route('/submit_answers', methods=['POST'])
 @login_required
@@ -249,7 +258,8 @@ def submit_answers():
                          validations=validations,
                          current_step=session['current_step'],
                          user=current_user,
-                         zip=zip)
+                         zip=zip,
+                         show_progress_bar=True)
 
 @app.context_processor
 def utility_processor():

@@ -14,7 +14,9 @@
     {% include 'partials/modal.html' %}
 
     <!-- Progress Steps -->
-    {% include 'partials/progress_bar.html' %}
+    {% if show_progress_bar %}
+        {% include 'partials/progress_bar.html' %}
+    {% endif %}
 
     <!-- Flash Messages -->
     {% include 'partials/flash_messages.html' %}
