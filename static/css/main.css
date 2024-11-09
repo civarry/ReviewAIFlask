@@ -119,7 +119,7 @@ body {
 
 /* Navigation Bar  */
 body {
-    padding-top: 70px; /* Adjust this value based on your navbar height */
+    padding-top: 70px;
 }
 
 @media (max-width: 991.98px) { /* Bootstrap's lg breakpoint */
