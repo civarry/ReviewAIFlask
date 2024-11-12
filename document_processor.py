@@ -9,18 +9,28 @@ from langchain.schema import Document as LangchainDocument
 import logging
 
 class DocumentProcessor:
-    def __init__(self, save_dir, chunk_size, chunk_overlap):
+    def __init__(self, save_dir, chunk_size, chunk_overlap, logging_enabled=False):
         self.save_dir = save_dir
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
+        self.logging_enabled = logging_enabled
         os.makedirs(self.save_dir, exist_ok=True)
-        logging.basicConfig(level=logging.DEBUG)
+
+        # Configure logging based on the logging_enabled flag
         self.logger = logging.getLogger(__name__)
+        if self.logging_enabled:
+            logging.basicConfig(level=logging.DEBUG)
+        else:
+            self.logger.disabled = True
+
+    def toggle_logging(self, enable_logging):
+        """Enable or disable logging dynamically."""
+        self.logging_enabled = enable_logging
+        self.logger.disabled = not enable_logging
 
     def extract_text_from_pdf(self, file):
         """Extract text from PDF files."""
         try:
-            # Save the file content to a temporary file
             temp_path = os.path.join(self.save_dir, 'temp.pdf')
             file.save(temp_path)
             
@@ -29,7 +39,6 @@ class DocumentProcessor:
             for page in reader.pages:
                 text += page.extract_text() + "\n"
             
-            # Clean up the temporary file
             os.remove(temp_path)
             return text
         except Exception as e:
@@ -39,14 +48,12 @@ class DocumentProcessor:
     def extract_text_from_docx(self, file):
         """Extract text from DOCX files."""
         try:
-            # Save the file content to a temporary file
             temp_path = os.path.join(self.save_dir, 'temp.docx')
             file.save(temp_path)
             
             doc = Document(temp_path)
             text = ' '.join([para.text for para in doc.paragraphs])
             
-            # Clean up the temporary file
             os.remove(temp_path)
             return text
         except Exception as e:
@@ -78,7 +85,6 @@ class DocumentProcessor:
     def save_text_to_file(self, text, filename):
         """Save extracted text to a file."""
         try:
-            # Ensure filename ends with .txt
             base_name = os.path.splitext(filename)[0]
             unique_filename = f"{uuid.uuid4()}_{base_name}.txt"
             file_path = os.path.join(self.save_dir, unique_filename)
@@ -131,22 +137,18 @@ class DocumentProcessor:
         try:
             self.logger.info(f"Starting to process file: {uploaded_file.filename}")
             
-            # Reset file pointer to beginning
             uploaded_file.seek(0)
             
-            # Extract text from file
             text = self.extract_text_from_file(uploaded_file)
             if not text:
                 self.logger.error("Failed to extract text from file")
                 return None
 
-            # Create document directly from text
             documents = self.load_documents(text, uploaded_file.filename)
             if not documents:
                 self.logger.error("Failed to create document")
                 return None
 
-            # Split the documents
             split_docs = self.split_documents(documents)
             if not split_docs:
                 self.logger.error("Failed to split documents")
