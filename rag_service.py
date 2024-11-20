@@ -15,8 +15,7 @@ class RAGService:
             model_name=self.model_name
         )
     
-    def create_rag_chain(self, split_docs):
-        """Create RAG chain with embeddings and return collection name."""
+    def create_rag_chain(self, split_docs): #responsible for creating the numerical representation of the provided documents.
         embedding_model = HuggingFaceEmbeddings(
             model_name=self.embedding_model_name
         )
@@ -35,8 +34,7 @@ class RAGService:
         # Return only the collection name
         return collection_name
     
-    def get_rag_chain(self, collection_name):
-        """Recreate RAG chain from collection name."""
+    def get_rag_chain(self, collection_name): #this is similar to a librarian who knows how to find the relevant parts from the chroma embedding
         embedding_model = HuggingFaceEmbeddings(
             model_name=self.embedding_model_name
         )
@@ -54,8 +52,7 @@ class RAGService:
             retriever=retriever
         )
     
-    def generate_questions(self, collection_name, question_count, complexity):
-        """Generate questions using the RAG chain."""
+    def generate_questions(self, collection_name, question_count, complexity): ##since we're using RAG the prompt we're passing to the LLM is more specific and focused because it includes the relevant context retrieved from the embeddings.
         rag_chain = self.get_rag_chain(collection_name)
         prompt = get_question_generation_prompt(question_count, complexity)
         response = rag_chain.invoke({"query": prompt})
@@ -65,8 +62,9 @@ class RAGService:
         return questions
     
     def validate_answer(self, collection_name, question, answer):
-        """Validate an answer using the RAG chain."""
         rag_chain = self.get_rag_chain(collection_name)
         prompt = get_answer_validation_prompt(question, answer)
         validation_response = rag_chain.invoke({"query": prompt})
+        print(f"Prompt: {prompt}")
+        print(f"Result: {validation_response['result']}")
         return validation_response['result'].strip()

@@ -142,7 +142,8 @@ def generate_questions():
         return render_template('questions.html',
                              questions=questions,
                              current_step=session['current_step'],
-                             user=current_user)
+                             user=current_user,
+                             show_progress_bar=True)
     
     return render_template('generate_questions.html',
                          current_step=session['current_step'],

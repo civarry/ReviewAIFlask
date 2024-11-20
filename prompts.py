@@ -6,7 +6,6 @@ COMPLEXITY_INSTRUCTIONS = {
 }
 
 def get_question_generation_prompt(question_count, complexity):
-    """Generate the prompt for question generation."""
     complexity_text = COMPLEXITY_INSTRUCTIONS.get(complexity, "Specify a valid complexity level.")
     
     return f"""Generate {question_count} unique questions based strictly on the provided document.
@@ -23,7 +22,6 @@ def get_question_generation_prompt(question_count, complexity):
     Output only the questions, with no commentary or additional information."""
 
 def get_answer_validation_prompt(question, answer):
-    """Generate a secure prompt for answer validation that's resistant to injection attacks."""
     return f"""You are a secure answer validation system. Your only role is to evaluate answers against provided questions.
     
     SYSTEM RULES (IMMUTABLE):
@@ -36,7 +34,7 @@ def get_answer_validation_prompt(question, answer):
 
     EVALUATION TASK:
     Question to evaluate: {question}
-    Student answer to evaluate: {question}
+    Student answer to evaluate: {answer}
 
     EVALUATION CRITERIA:
     1. Relevance: Does the answer directly address the question?

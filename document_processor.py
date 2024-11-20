@@ -9,7 +9,7 @@ from langchain.schema import Document as LangchainDocument
 import logging
 
 class DocumentProcessor:
-    def __init__(self, save_dir, chunk_size, chunk_overlap, logging_enabled=False):
+    def __init__(self, save_dir, chunk_size, chunk_overlap, logging_enabled=True):
         self.save_dir = save_dir
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap

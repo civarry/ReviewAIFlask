@@ -8,7 +8,7 @@ from config import Config
 from document_processor import DocumentProcessor
 from rag_service import RAGService
 
-os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1' ##This is temporary for the app to run on http
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -16,10 +16,9 @@ app.config.from_object(Config)
 # OAuth 2.0 client setup
 client = WebApplicationClient(app.config['GOOGLE_CLIENT_ID'])
 
-# Flask-Login setup
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'login' #this is the route of login
 
 # User session management
 @login_manager.user_loader
@@ -36,7 +35,7 @@ def load_user(user_id):
 def get_google_provider_cfg():
     return requests.get(app.config['GOOGLE_DISCOVERY_URL']).json()
 
-def get_user_storage_path(user_id):
+def get_user_storage_path(user_id):  #this code is responsible for genereating user specific path for embeddings
     """Create and return user-specific storage paths"""
     base_path = pathlib.Path(app.config['BASE_STORAGE_DIR'])
     user_path = base_path / str(user_id)
@@ -57,7 +56,7 @@ def get_user_services(user_id):
     doc_processor = DocumentProcessor(
         save_dir=save_dir,
         chunk_size=app.config['CHUNK_SIZE'],
-        chunk_overlap=app.config['CHUNK_OVERLAP']
+        chunk_overlap=app.config['CHUNK_OVERLAP'] ##chunk overlap is responsible for maintaining the continuity of the chunk
     )
 
     rag_service = RAGService(
@@ -69,7 +68,6 @@ def get_user_services(user_id):
     
     return doc_processor, rag_service
 
-# Import routes at the bottom to avoid circular imports
 from routes import *
 
 if __name__ == '__main__':
