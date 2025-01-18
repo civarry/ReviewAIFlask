@@ -15,7 +15,7 @@ class Config:
     
     # Model Configuration
     GROQ_API_KEY = os.getenv('groq_api_key')
-    MODEL_NAME = 'llama-3.1-70b-versatile'  # or 'mixtral-8x7b-32768l'
+    MODEL_NAME = 'llama-3.3-70b-versatile'  # or 'mixtral-8x7b-32768l'
     
     # Document Processing Configuration
     CHUNK_SIZE = 1000
